@@ -29,8 +29,8 @@ still green.  ASAN + UBSAN run on every test.
   fallback path.  All SIMD optimizations must be guarded by a
   compile-time feature flag and have a scalar reference implementation
   that is tested independently.
-- **Commit every green.** One commit per cycle.  Message starts with
-  `Cycle N: …` so the TDD arc is visible in `git log`.
+- **Commit every green.** One commit per cycle.  Messages use sentence
+  case, e.g. `Add jellygrid power node boundary condition`.
 
 ## Workflow
 
