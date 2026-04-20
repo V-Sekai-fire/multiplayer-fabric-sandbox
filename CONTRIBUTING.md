@@ -30,7 +30,8 @@ still green.  ASAN + UBSAN run on every test.
   compile-time feature flag and have a scalar reference implementation
   that is tested independently.
 - **Commit every green.** One commit per cycle.  Messages use sentence
-  case, e.g. `Add jellygrid power node boundary condition`.
+  case, e.g. `Add jellygrid power node boundary condition`.  Do not use
+  Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, etc.).
 
 ## Workflow
 
