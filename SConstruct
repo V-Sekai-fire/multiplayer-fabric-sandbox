@@ -25,7 +25,7 @@ import shutil
 script_dir = Dir('#').abspath                         # multiplayer-fabric-sandbox/
 monorepo   = os.path.dirname(script_dir)              # multiplayer-fabric/
 godot_dir  = os.path.join(monorepo, 'multiplayer-fabric-godot')
-api_dir    = os.path.join(godot_dir, 'modules', 'sandbox', 'program', 'cpp', 'docker', 'api')
+api_dir    = os.path.join(godot_dir, 'modules', 'sandbox', 'program', 'cpp', 'api')
 sim_dir    = os.path.join(godot_dir, 'modules', 'multiplayer_fabric_mmog')
 tw_dir     = os.path.join(monorepo, 'multiplayer-fabric-taskweft', 'standalone')
 

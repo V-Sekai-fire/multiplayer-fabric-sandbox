@@ -49,7 +49,7 @@ For ASAN/UBSAN testing of simulation logic, compile the header-only sim files di
 ## Dependencies
 
 - `godot-sandbox` api headers from the godot fork's
-  `modules/sandbox/program/cpp/docker/api/`
+  `modules/sandbox/program/cpp/api/`
 - `multiplayer_fabric_mmog` sim headers (pure C++, no Godot or api.hpp)
 - `multiplayer-fabric-taskweft/standalone/` headers (header-only C++)
 
