@@ -56,25 +56,18 @@ apt install gcc-14-riscv64-linux-gnu
 ./build.sh
 ```
 
-### Development builds with sanitizers (CMake)
+### Development builds with sanitizers
 
-CMake provides ASAN + UBSAN for host-architecture unit tests:
-
-```sh
-cmake -B build -DCMAKE_BUILD_TYPE=Debug \
-      -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined"
-cmake --build build
-ctest --test-dir build --output-on-failure
-```
-
-Cross-compile with CMake (requires `riscv64-unknown-elf-g++` on PATH,
-provide your own toolchain file — `riscv-toolchain.cmake` was removed
-because it hardcoded an absolute Cellar path):
+Use the system C++ compiler with ASAN + UBSAN to test host-architecture logic:
 
 ```sh
-cmake -B build-riscv -DCMAKE_TOOLCHAIN_FILE=/path/to/your/riscv.cmake
-cmake --build build-riscv
+c++ -std=c++23 -fsanitize=address,undefined -g \
+    -I modules/multiplayer_fabric_mmog \
+    jellygrid_swarm_sim.hpp  # header-only, compile via any translation unit
 ```
+
+The simulation headers (`jellygrid_swarm_sim.hpp`, etc.) have no Godot or
+api.hpp dependency and can be unit-tested directly on the host.
 
 ## Design notes
 
@@ -115,7 +108,3 @@ binary and running the in-editor sandbox test scene.
 3. `zig c++` + `ld.lld` — `brew install zig lld` on macOS (uses musl libc)
 4. `./build.sh` — Docker fallback, no local toolchain required
 
-The CMake path requires your own toolchain file targeting `riscv64-unknown-elf-g++`
-or `riscv64-unknown-linux-gnu-g++`. Install the compiler via
-`brew install riscv-software-src/riscv/riscv-gnu-toolchain` (macOS) or
-the distribution package on Linux.

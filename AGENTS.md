@@ -33,14 +33,13 @@ Override the compiler explicitly:
 scons riscv_cxx=riscv64-linux-gnu-g++-14
 ```
 
-CMake is also supported for development builds with sanitizers (see CONTRIBUTING.md).
+For ASAN/UBSAN testing of simulation logic, compile the header-only sim files directly with the host compiler (see CONTRIBUTING.md).
 
 ## Key files
 
 | Path | Purpose |
 |------|---------|
 | `SConstruct` | Primary SCons build — auto-detects RISC-V toolchain |
-| `CMakeLists.txt` | CMake alternative — used for ASAN/UBSAN development builds |
 | `build.sh` | Docker fallback — builds ELFs using a container with the cross-compiler |
 | `jellygrid_swarm.cpp` | Swarm simulation kernel |
 | `jellygrid_power_node.cpp` | Power-node simulation kernel |
