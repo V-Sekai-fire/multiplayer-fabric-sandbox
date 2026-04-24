@@ -14,7 +14,7 @@ static TwLoader::TwLoaded g_loaded;
 
 // Load a JSON-LD domain (full file contents as a string from the host).
 static Variant api_load_domain(String json) {
-    std::string s(json.utf8().ptr());
+    std::string s(json);
     g_loaded = TwLoader::load_json(s);
     return Nil;
 }
@@ -23,22 +23,22 @@ static Variant api_load_domain(String json) {
 static Variant api_plan() {
     auto plan = tw_plan(g_loaded.state, g_loaded.tasks, g_loaded.domain);
     std::string result = plan ? TwLoader::plan_to_json(*plan) : "null";
-    return String(result.c_str());
+    return String(result);
 }
 
 // Combined load + plan in one call — avoids a round-trip vmcall from the host.
 // Returns plan JSON, or "null" if planning fails.
 static Variant api_plan_domain(String json) {
-    std::string s(json.utf8().ptr());
+    std::string s(json);
     TwLoader::TwLoaded loaded = TwLoader::load_json(s);
     auto plan = tw_plan(loaded.state, loaded.tasks, loaded.domain);
     std::string result = plan ? TwLoader::plan_to_json(*plan) : "null";
-    return String(result.c_str());
+    return String(result);
 }
 
 // Plan an explicit task list (JSON array of arrays). Returns plan JSON.
 static Variant api_plan_tasks(String tasks_json) {
-    std::string s(tasks_json.utf8().ptr());
+    std::string s(tasks_json);
     TwValue tasks_val = TwLoader::parse_json_str(s);
     std::vector<TwTask> tasks;
     if (tasks_val.is_array()) {
@@ -53,14 +53,14 @@ static Variant api_plan_tasks(String tasks_json) {
     }
     auto plan = tw_plan(g_loaded.state, tasks, g_loaded.domain);
     std::string result = plan ? TwLoader::plan_to_json(*plan) : "null";
-    return String(result.c_str());
+    return String(result);
 }
 
 // ---- HRR holographic memory API -------------------------------------------
 
 // Encode a word → phase vector serialised as JSON float array.
 static Variant api_hrr_encode_atom(String word, int dim) {
-    auto phases = TwHRR::encode_atom(std::string(word.utf8().ptr()), dim);
+    auto phases = TwHRR::encode_atom(std::string(word), dim);
     std::string result = "[";
     for (size_t i = 0; i < phases.size(); ++i) {
         if (i) result += ",";
@@ -69,7 +69,7 @@ static Variant api_hrr_encode_atom(String word, int dim) {
         result += buf;
     }
     result += "]";
-    return String(result.c_str());
+    return String(result);
 }
 
 // similarity(a_json, b_json) → float. Inputs are JSON float arrays.
@@ -83,14 +83,14 @@ static Variant api_hrr_similarity(String a_json, String b_json) {
         }
         return phases;
     };
-    auto a = parse_vec(std::string(a_json.utf8().ptr()));
-    auto b = parse_vec(std::string(b_json.utf8().ptr()));
+    auto a = parse_vec(std::string(a_json));
+    auto b = parse_vec(std::string(b_json));
     return (float)TwHRR::similarity(a, b);
 }
 
 // encode_text(text, dim) → JSON float array
 static Variant api_hrr_encode_text(String text, int dim) {
-    auto phases = TwHRR::encode_text(std::string(text.utf8().ptr()), dim);
+    auto phases = TwHRR::encode_text(std::string(text), dim);
     std::string result = "[";
     for (size_t i = 0; i < phases.size(); ++i) {
         if (i) result += ",";
@@ -99,7 +99,7 @@ static Variant api_hrr_encode_text(String text, int dim) {
         result += buf;
     }
     result += "]";
-    return String(result.c_str());
+    return String(result);
 }
 
 int main() {
