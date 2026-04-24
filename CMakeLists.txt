@@ -1,12 +1,21 @@
 cmake_minimum_required(VERSION 3.20)
-project(jellygrid_sandbox LANGUAGES CXX)
+project(multiplayer_fabric_sandbox LANGUAGES CXX)
+
+# Monorepo layout:
+#   multiplayer-fabric/
+#     multiplayer-fabric-godot/      (Godot engine fork + sandbox module)
+#     multiplayer-fabric-sandbox/    ← this directory
+#     multiplayer-fabric-taskweft/   (taskweft standalone headers)
+
+set(MONOREPO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
+set(GODOT_DIR    "${MONOREPO_DIR}/multiplayer-fabric-godot")
 
 # Reuse the existing godot-sandbox cmake infrastructure.
-set(SANDBOX_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../modules/sandbox/program/cpp/cmake")
+set(SANDBOX_CMAKE_DIR "${GODOT_DIR}/modules/sandbox/program/cpp/cmake")
 add_subdirectory("${SANDBOX_CMAKE_DIR}" sandbox_cmake)
 
 # Pure sim headers from the mmog module — no Godot, no api.hpp dependency.
-set(SIM_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../modules/multiplayer_fabric_mmog")
+set(SIM_HEADERS_DIR "${GODOT_DIR}/modules/multiplayer_fabric_mmog")
 
 function(add_jellygrid_program name source)
     add_sandbox_program_at(${name}
@@ -23,10 +32,10 @@ add_jellygrid_program(jellygrid_swarm      jellygrid_swarm.cpp)
 add_jellygrid_program(jellygrid_power_node jellygrid_power_node.cpp)
 add_jellygrid_program(jellygrid_current    jellygrid_current.cpp)
 
-# Taskweft HTN planner — pure C++ standalone, no sim-headers dependency.
-set(TW_STANDALONE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../modules/taskweft/standalone")
+# Taskweft HTN planner — standalone headers from multiplayer-fabric-taskweft.
+set(TW_STANDALONE_DIR "${MONOREPO_DIR}/multiplayer-fabric-taskweft/standalone")
 add_sandbox_program_at(taskweft_planner
     "${CMAKE_CURRENT_SOURCE_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/taskweft_planner.cpp"
 )
-target_include_directories(taskweft_planner PRIVATE "${TW_STANDALONE_DIR}/..")
+target_include_directories(taskweft_planner PRIVATE "${TW_STANDALONE_DIR}")
