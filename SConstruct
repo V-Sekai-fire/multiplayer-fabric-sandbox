@@ -82,22 +82,13 @@ env = Environment(
 api_srcs = Glob(os.path.join(api_dir, '*.cpp'))
 api_objs = [env.Object(src) for src in api_srcs]
 
-# ── Demo sandbox dir for Godot (ELF must have .elf extension) ─────────────────
-demo_sandbox_dir = os.path.join(
-    godot_dir,
-    'modules', 'multiplayer_fabric', 'demo', 'abyssal_vr', 'sandbox')
-
 # ── Per-program builder ───────────────────────────────────────────────────────
-def sandbox_program(name, src, extra_includes=(), install_as_elf=None):
+def sandbox_program(name, src, extra_includes=()):
     e = env.Clone()
     if extra_includes:
         e.Append(CPPPATH=list(extra_includes))
     obj = e.Object(source=src)
-    prog = e.Program(target=name, source=[obj] + api_objs)
-    if install_as_elf:
-        dest = os.path.join(demo_sandbox_dir, install_as_elf)
-        e.Command(dest, prog, Copy('$TARGET', '$SOURCE'))
-    return prog
+    return e.Program(target=name, source=[obj] + api_objs)
 
 # ── Programs ──────────────────────────────────────────────────────────────────
 sandbox_program('jellygrid_swarm',      'jellygrid_swarm.cpp',      [sim_dir])
@@ -105,6 +96,4 @@ sandbox_program('jellygrid_power_node', 'jellygrid_power_node.cpp', [sim_dir])
 sandbox_program('jellygrid_current',    'jellygrid_current.cpp',    [sim_dir])
 
 # taskweft standalone headers live in multiplayer-fabric-taskweft/standalone/
-# Also copies to the Godot demo as taskweft_planner.elf for the sandbox test.
-sandbox_program('taskweft_planner', 'taskweft_planner.cpp', [tw_dir],
-                install_as_elf='taskweft_planner.elf')
+sandbox_program('taskweft_planner', 'taskweft_planner.cpp', [tw_dir])
