@@ -41,7 +41,6 @@ CMake is also supported for development builds with sanitizers (see CONTRIBUTING
 |------|---------|
 | `SConstruct` | Primary SCons build — auto-detects RISC-V toolchain |
 | `CMakeLists.txt` | CMake alternative — used for ASAN/UBSAN development builds |
-| `riscv-toolchain.cmake` | CMake cross-compilation toolchain file |
 | `build.sh` | Docker fallback — builds ELFs using a container with the cross-compiler |
 | `jellygrid_swarm.cpp` | Swarm simulation kernel |
 | `jellygrid_power_node.cpp` | Power-node simulation kernel |

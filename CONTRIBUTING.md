@@ -6,8 +6,7 @@ power-node flow, and the Taskweft HTN planner.  The source is RISC-V
 compatible and is consumed by the `godot-sandbox` module inside the
 `multiplayer-fabric-godot` fork, which runs these kernels inside a
 sandboxed Godot scripting environment.  A cross-compilation toolchain
-is provided via `riscv-toolchain.cmake`.  Builds with CMake; no system
-dependencies beyond a C++20 compiler.
+is provided via `SConstruct` (auto-detects toolchain) or Docker via `build.sh`.
 
 Built strictly red-green-refactor: every feature is driven by a failing
 test, committed when green, then any cleanup is done with the test
@@ -68,10 +67,12 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-Cross-compile with CMake (requires `riscv64-unknown-elf-g++` on PATH):
+Cross-compile with CMake (requires `riscv64-unknown-elf-g++` on PATH,
+provide your own toolchain file — `riscv-toolchain.cmake` was removed
+because it hardcoded an absolute Cellar path):
 
 ```sh
-cmake -B build-riscv -DCMAKE_TOOLCHAIN_FILE=riscv-toolchain.cmake
+cmake -B build-riscv -DCMAKE_TOOLCHAIN_FILE=/path/to/your/riscv.cmake
 cmake --build build-riscv
 ```
 
@@ -114,6 +115,7 @@ binary and running the in-editor sandbox test scene.
 3. `zig c++` + `ld.lld` — `brew install zig lld` on macOS (uses musl libc)
 4. `./build.sh` — Docker fallback, no local toolchain required
 
-`riscv-toolchain.cmake` (CMake path) expects `riscv64-unknown-elf-g++`.
-Install via `brew install riscv-software-src/riscv/riscv-gnu-toolchain`
-(macOS) or the distribution package on Linux.
+The CMake path requires your own toolchain file targeting `riscv64-unknown-elf-g++`
+or `riscv64-unknown-linux-gnu-g++`. Install the compiler via
+`brew install riscv-software-src/riscv/riscv-gnu-toolchain` (macOS) or
+the distribution package on Linux.
