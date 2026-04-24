@@ -35,13 +35,42 @@ still green.  ASAN + UBSAN run on every test.
 
 ## Workflow
 
+### Build RISC-V ELFs (primary)
+
+`SConstruct` auto-detects the toolchain — run `scons` from this directory:
+
+```sh
+scons        # detects riscv64-linux-gnu-g++, zig+lld, or prints install hints
+scons -j4    # parallel
 ```
+
+Install the toolchain (pick one):
+
+```sh
+# macOS — zig + lld (no extra tap required)
+brew install zig lld
+
+# Linux (Debian/Ubuntu)
+apt install gcc-14-riscv64-linux-gnu
+
+# Any platform — Docker fallback (no local install needed)
+./build.sh
+```
+
+### Development builds with sanitizers (CMake)
+
+CMake provides ASAN + UBSAN for host-architecture unit tests:
+
+```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Debug \
       -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined"
 cmake --build build
 ctest --test-dir build --output-on-failure
+```
 
-# Cross-compile for RISC-V
+Cross-compile with CMake (requires `riscv64-unknown-elf-g++` on PATH):
+
+```sh
 cmake -B build-riscv -DCMAKE_TOOLCHAIN_FILE=riscv-toolchain.cmake
 cmake --build build-riscv
 ```
@@ -79,7 +108,12 @@ binary and running the in-editor sandbox test scene.
 
 ### RISC-V toolchain
 
-`riscv-toolchain.cmake` expects `riscv64-unknown-elf-g++` on `PATH`.
+`SConstruct` auto-detects in priority order:
+1. `riscv64-linux-gnu-g++-14` — Linux package `gcc-14-riscv64-linux-gnu`
+2. `riscv64-unknown-linux-gnu-g++` — from `riscv-gnu-toolchain` source build
+3. `zig c++` + `ld.lld` — `brew install zig lld` on macOS (uses musl libc)
+4. `./build.sh` — Docker fallback, no local toolchain required
+
+`riscv-toolchain.cmake` (CMake path) expects `riscv64-unknown-elf-g++`.
 Install via `brew install riscv-software-src/riscv/riscv-gnu-toolchain`
-(macOS) or the distribution package on Linux.  CI runs the RISC-V
-build in a QEMU user-mode emulation environment.
+(macOS) or the distribution package on Linux.
